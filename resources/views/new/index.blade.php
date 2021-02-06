@@ -1,0 +1,1 @@
+<h1>Index Method of new controller</h1>
