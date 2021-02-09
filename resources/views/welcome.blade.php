@@ -49,6 +49,9 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ URL::to('/contact') }}">Contact</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('student') }}">Student</a>
+          </li>
         </ul>
       </div>
     </div>

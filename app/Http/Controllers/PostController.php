@@ -69,4 +69,80 @@ class PostController extends Controller
              ->first();
       return view('post.viewpost',compact('post'));       
    }
+
+   public function EditPost($id){
+   	$category = DB::table('categories')->get();
+   	$post = DB::table('posts')->where('id',$id)->first();
+
+   	return view('post.editpost',compact('category','post'));
+   }
+
+   public function UpdatePost(Request $request,$id){
+      	$validateData = $request->validate([
+       'title'=>'required|max:125',
+       'details'=>'required|max:400',
+       'image'=>'mimes:jpeg,jpg,png|max:2000'       
+   	]);
+
+   	$data=array();
+   	$data['title']=$request->title;
+   	$data['category_id']=$request->category_id;
+   	$data['details'] = $request->details;
+   	$image = $request->file('image');
+   	if($image){
+      $image_name = Str::random(5);
+      $ext = Str::lower($image->getClientOriginalExtension());
+      $image_full_name = $image_name.'.'.$ext;
+      $upload_path = 'public/Frontend/Image/';
+      $image_url = $upload_path.$image_full_name;
+      $success = $image->move($upload_path,$image_full_name);
+      $data['image']=$image_url;
+      //return $request->old_photo;
+      unlink($request->old_photo);
+      DB::table('posts')->where('id',$id)->update($data);
+
+      $notification=array(
+   			'message'=>'Successfully Post Updated',
+   			'alert-type'=>'success'
+   		);
+
+   		 return Redirect()->route('all.post')->with($notification);
+
+   	}else{
+   		$data['image']=$request->old_photo;
+   		//eturn response()->json($data);
+   	    DB::table('posts')->where('id',$id)->update($data);
+   		$notification=array(
+   			'message'=>'Successfully Post Updated',
+   			'alert-type'=>'success'
+   		);
+   	}
+
+      return Redirect()->route('all.post')->with($notification);
+   }
+
+   public function DeletePost($id){
+     
+     $post = DB::table('posts')->where('id',$id)->first();
+     $image = $post->image;
+    // return response()->json($image);
+     $delete = DB::table('posts')->where('id',$id)->delete();
+
+     if($delete){
+     	unlink($image);
+     	$notification=array(
+   			'message'=>'Successfully Post deleted',
+   			'alert-type'=>'success'
+   		);
+
+   		return Redirect()->back()->with($notification);
+     }else{
+     	$notification=array(
+   			'message'=>'Successfully Went Wrong',
+   			'alert-type'=>'error'
+   		);
+
+   		return Redirect()->back()->with($notification);
+     }
+   }
 }

@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('pages.home');
-});
+//Route::get('/', function () {
+  //  return view('pages.home');
+//});
 
+Route::get('/','HelloController@home');
 
 Route::get('/about','HelloController@index');
 
@@ -58,6 +59,13 @@ Route::get('write/post','PostController@writePost')->name('write.post');
 Route::post('store/post','PostController@StorePost')->name('store.post');
 Route::get('all/post','PostController@AllPost')->name('all.post');
 Route::get('view/post/{id}','PostController@ViewPost');
+Route::get('edit/post/{id}','PostController@EditPost');
+Route::post('update/post/{id}','PostController@UpdatePost');
+Route::get('delete/post/{id}','PostController@DeletePost');
+
+//Student crud here
+Route::get('student','StudentController@student')->name('student');
+Route::post('store/student','StudentController@Store')->name('store.student');
 
 /*Route::prefix('/pages')->group(function(){
    Route::get('/test1',function(){
